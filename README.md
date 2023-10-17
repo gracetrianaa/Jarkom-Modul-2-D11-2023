@@ -1081,6 +1081,68 @@ Hasil setelah dijalankan command
 ![Screenshot (124)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/d7d590cf-421d-4465-89a3-faf9df322c42)
 
 ## Soal 20 
+Karena website www.parikesit.abimanyu.yyy.com semakin banyak pengunjung dan banyak gambar gambar random, maka ubahlah request gambar yang memiliki substring “abimanyu” akan diarahkan menuju abimanyu.png.
+
+Answer :
+
+Command berikut agar dapat melakukan rewrite
+
+```
+a2enmod rewrite
+```
+
+Setup pada `AbimanyuWebServer`
+
+```
+echo 'RewriteEngine On
+RewriteCond %{REQUEST_URI} ^/public/images/(.*)(abimanyu)(.*\.(png|jpg))
+RewriteCond %{REQUEST_URI} !/public/images/abimanyu.png
+RewriteRule abimanyu http://parikesit.abimanyu.d11.com/public/images/abimanyu.png$1 [L,R=301]' > /var/www/parikesit.abimanyu.d11/.htaccess
+
+echo "<VirtualHost *:80>
+  ServerName parikesit.abimanyu.d11.com
+  ServerAlias www.parikesit.abimanyu.d11.com
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/parikesit.abimanyu.d11
+
+  ErrorLog \${APACHE_LOG_DIR}/error.log
+  CustomLog \${APACHE_LOG_DIR}/access.log combined
+  <Directory /var/www/parikesit.abimanyu.d11/public>
+    Options +Indexes
+  </Directory>
+
+  <Directory /var/www/parikesit.abimanyu.d11/secret>
+    Options -Indexes
+  </Directory>
+
+  <Directory /var/www/parikesit.abimanyu.d11>
+          Options +FollowSymLinks -Multiviews
+          AllowOverride All
+  </Directory>
+
+  Alias "/public" "/var/www/parikesit.abimanyu.d11/public"
+  Alias "/secret" "/var/www/parikesit.abimanyu.d11/secret"
+  Alias "/js" "/var/www/parikesit.abimanyu.d11/public/js"
+
+</VirtualHost>" > /etc/apache2/sites-available/parikesit.abimanyu.d11.com.conf
+```
+
+Run command pada client
+```
+lynx parikesit.abimanyu.d11.com/public/images/not-abimanyu.png
+lynx parikesit.abimanyu.d11.com/public/images/abimanyu-student.jpg
+lynx parikesit.abimanyu.d11.com/public/images/abimanyu.png
+lynx parikesit.abimanyu.d11.com/public/images/notabimanyujustmuseum.177013
+```
+
+#### Result
+
+Hasil salah satu command client setelah dijalankan
+
+![Screenshot (127)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/bb46bf24-51e1-4f1e-a41e-c8279097f2c6)
+
+
+
 
 
 
