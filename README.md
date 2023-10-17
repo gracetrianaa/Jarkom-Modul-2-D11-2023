@@ -2,7 +2,7 @@
 
 |Nama|NRP|
 |----|---|
-|Grace|5025211|
+|Gracetriana Survinta Septinaputri|5025211199|
 |Muhammad Rifqi Fadhilah|5025211228|
 
 - [Soal 1](#soal-1)
