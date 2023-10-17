@@ -601,3 +601,69 @@ lynx http://arjuna.d11.com
 <img width="860" alt="15" src="https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/130858750/a902b7c6-0e68-4fc2-a758-d83d7aea5a2e">
 
 <img width="854" alt="16" src="https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/130858750/bc019c34-c64c-4561-81b3-46344c732cd3">
+
+## Soal 11 
+
+Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server www.abimanyu.yyy.com. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy
+
+Answer :
+
+Lakukan setup pada AbimanyuWebServer terlebih dahulu seperti ini
+
+- AbimanyuWebServer
+  
+```
+apt-get install apache2 -y
+apache2 -v
+service apache2 start
+
+apt-get install libapache2-mod-php7.0 -y
+
+mkdir /var/www/abimanyu.d11
+
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/abimanyu.d11.com.conf
+rm /etc/apache2/sites-available/000-default.conf
+
+echo "<VirtualHost *:80>
+  ServerName abimanyu.d11.com
+  ServerAlias www.abimanyu.d11.com
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/abimanyu.d11
+
+  ErrorLog \${APACHE_LOG_DIR}/error.log
+  CustomLog \${APACHE_LOG_DIR}/access.log combined
+
+  <Directory /var/www/abimanyu.d11/index.php/home>
+      Options +Indexes
+  </Directory>
+    
+    Alias \"/home\" \"/var/www/abimanyu.d11/index.php/home\"
+</VirtualHost>" > /etc/apache2/sites-available/abimanyu.d11.com.conf
+
+wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1a4V23hwK9S7hQEDEcv9FL14UkkrHc-Zc" -O /var/www/abimanyu.d11/abimanyu.d11.com.zip
+
+unzip /var/www/abimanyu.d11/abimanyu.d11.com.zip -d /var/www/abimanyu.d11/
+
+mv /var/www/abimanyu.d11/abimanyu.yyy.com/home.html /var/www/abimanyu.d11/
+mv /var/www/abimanyu.d11/abimanyu.yyy.com/abimanyu.webp /var/www/abimanyu.d11/
+mv /var/www/abimanyu.d11/abimanyu.yyy.com/index.php /var/www/abimanyu.d11/
+
+a2ensite abimanyu.d11.com.conf
+service apache2 reload
+service apache2 restart
+```
+
+Kemudian pada client run command
+
+- Nakula & Sadewa Client
+  
+```
+lynx abimanyu.d11.com #dan
+lynx abimanyu.d11.com/index.php/home
+```
+#### Result
+Jika berhasil dijalankan, akan mengeluarkan output seperti ini: 
+
+![Screenshot 2023-10-17 141508](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/1daef250-5ca2-406c-842a-e657c2adbbe7)
+
+
