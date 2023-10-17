@@ -445,8 +445,159 @@ ping www.rjp.baratayuda.abimanyu.d11.com -c 5
 ## Soal 9
 Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai webserver) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
 
+Answer :
+Lakukan setup pada ArjunaLoadBalancer
+
+```
+echo '
+server {
+ listen 80;
+ server_name arjuna.d11.com www.arjuna.d11.com;
+
+ location / {
+ proxy_pass http://myweb;
+        }
+}' > /etc/nginx/sites-available/lb-jarkom
+
+
+ln -s /etc/nginx/sites-available/lb-jarkom /etc/nginx/sites-enabled
+
+rm -rf /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+
+Lakukan setup pada masing masing worker yaitu AbimanyuWebServer, PrabukusumaWebServer, WisanggeniWebServer
+
+```
+service php7.0-fpm start
+
+echo 'server {
+
+ listen 80;
+
+ root /var/www/jarkom;
+
+ index index.php index.html index.htm;
+ server_name _;
+
+ location / {
+ try_files $uri $uri/ /index.php?$query_string;
+ }
+
+ # pass PHP scripts to FastCGI server
+ location ~ \.php$ {
+ include snippets/fastcgi-php.conf;
+ fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+ }
+
+ location ~ /\.ht {
+ deny all;
+ }
+
+ error_log /var/log/nginx/jarkom_error.log;
+ access_log /var/log/nginx/jarkom_access.log;
+ }' > /etc/nginx/sites-available/jarkom
+
+ln -s /etc/nginx/sites-available/jarkom /etc/nginx/sites-enabled
+
+apt-get update && apt-get install wget && apt-get install unzip
+
+wget --no-check-certificate "https://drive.google.com/uc?export=download&id=17tAM_XDKYWDvF-JJix1x7txvTBEax7vX" -O /var/$
+
+unzip /var/www/jarkom/arjuna.d11.com.zip -d /var/www/jarkom/
+mv /var/www/jarkom/arjuna.yyy.com/index.php /var/www/jarkom/
+
+rm -rf /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+
+setelah melakukan setup lakukan test pada client
+
+```
+lynx http://10.27.1.4
+lynx http://10.27.1.5
+lynx http://10.27.1.6
+lynx http://arjuna.d11.com
+```
+<img width="863" alt="11" src="https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/130858750/7a25737f-7a4b-407c-b195-4ffb44bb4165">
+
+<img width="854" alt="12" src="https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/130858750/995acfbe-617d-481a-abe1-3ac45c7034a6">
+
+<img width="862" alt="13" src="https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/130858750/c3f038cd-2cba-45ff-9663-2899a45b6f73">
+
+
 ## Soal 10
 Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh
-    - Prabakusuma:8001
-    - Abimanyu:8002
-    - Wisanggeni:8003
+
+- Prabakusuma:8001
+- Abimanyu:8002
+- Wisanggeni:8003
+
+Answer : 
+Lakukan setup tambahan pada ArjunaLoadBalancer
+
+```
+echo '
+# Default menggunakan Round Robin
+upstream myweb  {
+        server 10.27.1.4:8001; #IP Abimanyu
+ server 10.27.1.5:8002; #IP Prabukusuma
+        server 10.27.1.6:8003; #IP Wisanggeni
+}
+
+server {
+ listen 80;
+ server_name arjuna.d11.com www.arjuna.d11.com;
+
+ location / {
+ proxy_pass http://myweb;
+        }
+}' > /etc/nginx/sites-available/lb-jarkom
+```
+
+Lakukan setup tambahan pada tiap worker, pada `listen 800X` di ubah menyesuaikan port tiap worker. Pada praktikum kali ini kami mengatur port 8001 Abimanyu, 8002 Prabukusuma, 8003 Wisanggeni
+
+```
+echo 'server {
+
+ listen 800X;
+
+ root /var/www/jarkom;
+
+ index index.php index.html index.htm;
+ server_name _;
+
+ location / {
+ try_files $uri $uri/ /index.php?$query_string;
+ }
+
+ # pass PHP scripts to FastCGI server
+ location ~ \.php$ {
+ include snippets/fastcgi-php.conf;
+ fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+ }
+
+ location ~ /\.ht {
+ deny all;
+ }
+
+ error_log /var/log/nginx/jarkom_error.log;
+ access_log /var/log/nginx/jarkom_access.log;
+ }' > /etc/nginx/sites-available/jarkom
+```
+
+setelah melakukan setup lakukan test pada client
+
+```
+lynx http://10.27.1.4:8001
+lynx http://10.27.1.5:8002
+lynx http://10.27.1.6:8003
+lynx http://arjuna.d11.com
+```
+<img width="856" alt="14" src="https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/130858750/3a9384f3-a3d8-4767-b90b-a91b0a87f601">
+
+<img width="860" alt="15" src="https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/130858750/a902b7c6-0e68-4fc2-a758-d83d7aea5a2e">
+
+<img width="854" alt="16" src="https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/130858750/bc019c34-c64c-4561-81b3-46344c732cd3">
