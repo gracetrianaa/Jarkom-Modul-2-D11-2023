@@ -752,5 +752,69 @@ lynx parikesit.abimanyu.d11.com
 Hasil setelah command berhasil berjalan
 ![Screenshot (106)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/cd02d583-008f-4310-b3c5-cf0f6a7b40a3)
 
+## Soal 14
+
+Pada subdomain tersebut folder /public hanya dapat melakukan directory listing sedangkan pada folder /secret tidak dapat diakses (403 Forbidden).
+
+Answer :
+Setup pada `AbimanyuWebServer` untuk melakukan `directory listing` untuk folder `/public` dengan menggunakan `Options +Indexes`. Sedangkan, pada folder `/secret`
+agar tidak bisa diakses, digunakan `Options -Indexes`
+- AbimanyuWebServer
+
+```
+mkdir /var/www/parikesit.abimanyu.d11/secret
+cp /var/www/parikesit.abimanyu.d11/error/403.html /var/www/parikesit.abimanyu.d11/secret/403.html
 
 
+echo "<VirtualHost *:80>
+  ServerName parikesit.abimanyu.d11.com
+  ServerAlias www.parikesit.abimanyu.d11.com
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/parikesit.abimanyu.d11
+
+  ErrorLog \${APACHE_LOG_DIR}/error.log
+  CustomLog \${APACHE_LOG_DIR}/access.log combined
+  <Directory /var/www/parikesit.abimanyu.d11/public>
+    Options +Indexes
+  </Directory>
+  <Directory /var/www/parikesit.abimanyu.d11/secret>
+    Options -Indexes
+  </Directory>
+</VirtualHost>" > /etc/apache2/sites-available/parikesit.abimanyu.d11.com.conf
+
+service apache2 reload
+service apache2 restart
+```
+
+Kemudian, run command pada client
+
+- Nakula & Sadewa Client
+```
+lynx parikesit.abimanyu.d11.com/public
+lynx parikesit.abimanyu.d11.com/secret
+```
+
+#### Result
+
+Hasil program setelah dijalankan
+
+`parikesit.abimanyu.d11.com/public`
+
+![Screenshot (108)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/d282b637-4dc3-4367-b2ff-e98a853f44cf)
+
+`parikesit.abimanyu.d11.com/secret`
+
+![Screenshot (111)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/066bc168-8f8c-459b-af28-45d550340e6f)
+
+## Soal 15
+
+Buatlah kustomisasi halaman error pada folder /error untuk mengganti error kode pada Apache. Error kode yang perlu diganti adalah 404 Not Found dan 403 Forbidden.
+
+Answer :
+
+
+
+
+
+
+  
