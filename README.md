@@ -900,6 +900,189 @@ Hasil program dijalankan
 
 ## Soal 16
 
+Buatlah suatu konfigurasi virtual host agar file asset www.parikesit.abimanyu.yyy.com/public/js menjadi 
+www.parikesit.abimanyu.yyy.com/js 
+
+Answer :
+Setup pada `AbimanyuWebServer` dengan menambahkan `alias` untuk mengganti urlnya
+- AbimanyuWebServer
+```
+echo 'Alias \"/js\" \"/var/www/parikesit.abimanyu.d11/public/js\"' >> /etc/apache2/sites-available/parikesit.abimanyu.d11.com.conf
+```
+
+Cek dengan run command pada client
+- Nakula & Sadewa Client
+  
+```
+lynx parikesit.abimanyu.d11.com/js
+```
+#### Result
+
+Hasil setelah dijalankan
+![Screenshot (116)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/b3e77291-8d36-4645-99b1-4316e7386206)
+
+## Soal 17
+
+Agar aman, buatlah konfigurasi agar www.rjp.baratayuda.abimanyu.yyy.com hanya dapat diakses melalui port 14000 dan 14400.
+
+Answer :
+
+Setup Abimanyuserver dengan scrip berikut
+- AbimanyuWebServer
+
+```
+mkdir /var/www/rjp.baratayuda.abimanyu.d11
+
+echo -e '<VirtualHost *:14000 *:14400>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/rjp.baratayuda.abimanyu.d11
+  ServerName rjp.baratayuda.abimanyu.d11.com
+  ServerAlias www.rjp.baratayuda.abimanyu.d11.com
+
+  ErrorDocument 404 /error/404.html
+  ErrorDocument 403 /error/403.html
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/rjp.baratayuda.abimanyu.d11.com.conf
+
+echo -e '# If you just change the port or add more ports here, you will likely also
+# have to change the VirtualHost statement in
+# /etc/apache2/sites-enabled/000-default.conf
+
+Listen 80
+Listen 14000
+Listen 14400
+
+<IfModule ssl_module>
+        Listen 443
+</IfModule>
+
+<IfModule mod_gnutls.c>
+        Listen 443
+</IfModule>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet' > /etc/apache2/ports.conf
+
+wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1pPSP7yIR05JhSFG67RVzgkb-VcW9vQO6" -O /var/www/rjp.baratayuda.abimanyu.d11/rjp.baratayuda.abimanyu.d11.com.zip
+
+unzip /var/www/rjp.baratayuda.abimanyu.d11/rjp.baratayuda.abimanyu.d11.com.zip -d /var/www/rjp.baratayuda.abimanyu.d11/
+
+mv /var/www/rjp.baratayuda.abimanyu.d11/rjp.baratayuda.abimanyu.yyy.com/anya-bond.webp /var/www/rjp.baratayuda.abimanyu.d11/
+mv /var/www/rjp.baratayuda.abimanyu.d11/rjp.baratayuda.abimanyu.yyy.com/loid.png /var/www/rjp.baratayuda.abimanyu.d11/
+mv /var/www/rjp.baratayuda.abimanyu.d11/rjp.baratayuda.abimanyu.yyy.com/waku.mp3 /var/www/rjp.baratayuda.abimanyu.d11/
+mv /var/www/rjp.baratayuda.abimanyu.d11/rjp.baratayuda.abimanyu.yyy.com/yor.jpg /var/www/rjp.baratayuda.abimanyu.d11/
+
+rm -r /var/www/rjp.baratayuda.abimanyu.d11/rjp.baratayuda.abimanyu.d11.com.zip
+rm -r /var/www/rjp.baratayuda.abimanyu.d11/rjp.baratayuda.abimanyu.yyy.com/
+
+a2ensite rjp.baratayuda.abimanyu.d11.com.conf
+service apache2 restart
+```
+
+Kemudian, run command di client
+- Nakula & Sadewa Client
+
+```
+lynx rjp.baratayuda.abimanyu.d11.com:14000
+lynx rjp.baratayuda.abimanyu.d11.com:14400
+```
+#### Result
+Hasil setelah command dijalankan
+
+`Port 14000`
+![Screenshot (117)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/a86d3cd5-be3c-487c-8d7e-552b7523aaf7)
+
+`Port 14400`
+![Screenshot (118)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/4190fb16-87db-4894-b7ff-dc34a94a2bf8)
+
+`Port yang tidak sesuai`
+![Screenshot (119)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/f299d676-4688-4e2f-9688-ce67699a2582)
+
+## Soal 18
+Untuk mengaksesnya buatlah autentikasi username berupa “Wayang” dan password “baratayudayyy” dengan yyy merupakan kode kelompok. Letakkan DocumentRoot pada /var/www/rjp.baratayuda.abimanyu.yyy.
+
+Answer :
+
+Tambah beberapa setup pada `AbimanyuWebServer`
+- AbimanyuWebServer
+
+```
+ echo '<Directory /var/www/rjp.baratayuda.abimanyu.D06>
+          AuthType Basic
+          AuthName "Restricted Content"
+          AuthUserFile /etc/apache2/.htpasswd
+          Require valid-user
+  </Directory>' >> /etc/apache2/sites-available/rjp.baratayuda.abimanyu.d11.com.conf
+
+a2ensite rjp.baratayuda.abimanyu.d11.com.conf
+service apache2 restart
+
+htpasswd -c -b /etc/apache2/.htpasswd Wayang baratayudaD11
+```
+`htpsswd -c -b` digunakan untuk menambah autentikasi username dan password. `-c` berarti `created` dan `-b` berarti `-bcrypt` yang akan melakukan hash pada password sebelum disimpan.
+
+Kemudian, run command pada client
+
+```
+lynx rjp.baratayuda.abimanyu.d11.com:14000
+lynx rjp.baratayuda.abimanyu.d11.com:14400
+```
+
+#### Result
+`username`
+
+![Screenshot (120)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/89956083-1ec0-43a3-a1c2-da9d46bff2ba)
+
+`password`
+
+![Screenshot (121)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/213de83c-e4bf-4151-a7e8-3958dabaae0d)
+
+`Page ketika berhasil masuk`
+
+![Screenshot (122)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/fa65ccd7-e612-4fcf-b12d-7c565234fb24)
+
+
+## Soal 19
+
+Buatlah agar setiap kali mengakses IP dari Abimanyu akan secara otomatis dialihkan ke www.abimanyu.yyy.com (alias)
+
+Answer :
+
+Setup dengan memanfaatkan `Redirect` pada `AbimanyuWebServer`
+- AbimanyuWebServer
+
+```
+echo -e '<VirtualHost *:80>
+    ServerAdmin webmaster@abimanyu.d11.com
+    DocumentRoot /var/www/html
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    Redirect / http://www.abimanyu.d11.com/
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+
+apache2ctl configtest
+service apache2 restart
+```
+Kemudian, run command ke IP Abimanyu pada client
+- Nakula & Sadewa Client
+
+```
+lynx 10.27.1.4
+```
+#### Result
+
+Hasil setelah dijalankan command
+
+![Screenshot (125)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/a43bd149-d3d6-41df-8883-5022a7dcc7ef)
+
+![Screenshot (124)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/d7d590cf-421d-4465-89a3-faf9df322c42)
+
+## Soal 20 
+
+
 
 
 
