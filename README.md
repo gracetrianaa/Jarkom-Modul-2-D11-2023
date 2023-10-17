@@ -633,11 +633,6 @@ echo "<VirtualHost *:80>
   ErrorLog \${APACHE_LOG_DIR}/error.log
   CustomLog \${APACHE_LOG_DIR}/access.log combined
 
-  <Directory /var/www/abimanyu.d11/index.php/home>
-      Options +Indexes
-  </Directory>
-    
-    Alias \"/home\" \"/var/www/abimanyu.d11/index.php/home\"
 </VirtualHost>" > /etc/apache2/sites-available/abimanyu.d11.com.conf
 
 wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1a4V23hwK9S7hQEDEcv9FL14UkkrHc-Zc" -O /var/www/abimanyu.d11/abimanyu.d11.com.zip
@@ -665,5 +660,33 @@ lynx abimanyu.d11.com/index.php/home
 Jika berhasil dijalankan, akan mengeluarkan output seperti ini: 
 
 ![Screenshot 2023-10-17 141508](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/1daef250-5ca2-406c-842a-e657c2adbbe7)
+
+## Soal 12
+Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abimanyu.yyy.com/home.
+
+Answer:
+
+Setup `AbimanyuWebServer` terlebih dahulu dengan menambahkan beberapa baris code yang menggunakan `Directory` dan `Alias` untuk mengganti urlnya
+
+```
+  <Directory /var/www/abimanyu.d11/index.php/home>
+      Options +Indexes
+  </Directory>
+    
+    Alias \"/home\" \"/var/www/abimanyu.d11/index.php/home\"
+>>  /etc/apache2/sites-available/abimanyu.d11.com.conf
+```
+Kemudian, pada client run command
+```
+lynx abimanyu.d11.com/home #atau
+curl abimanyu.d11.com/home
+```
+
+#### Result
+Hasil jika command berhasil dijalankan
+![Screenshot 2023-10-17 141525](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/aa1b9981-1448-4a20-bd43-c9e5863a667e)
+
+
+
 
 
