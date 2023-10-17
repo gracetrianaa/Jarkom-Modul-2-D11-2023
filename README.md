@@ -812,7 +812,93 @@ Buatlah kustomisasi halaman error pada folder /error untuk mengganti error kode 
 
 Answer :
 
+Setup pada `AbimanyuWebServer` untuk mengganti error kode pada `html`-nya
 
+- AbimanyuWebServer
+```
+echo -e '
+<html
+  style="
+    background-image: url('nyee.jpg');
+    height: 100;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 100%;
+    width: 100%;
+  "
+>
+  <header>
+    <h1 style="text-align: center; color: white">
+      ERROR 403 (Forbidden) nih. Halo dari Kelompok D11
+    </h1>
+  </header>
+</html>
+' >/var/www/parikesit.abimanyu.d11/error/403.html
+
+echo -e '
+<html
+  style="
+    background-image: url('nyee.jpg');
+    height: 100;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 100%;
+    width: 100%;
+  "
+>
+  <header>
+    <h1 style="text-align: center; color: white">
+      ERROR 404 (Not Found) nih. Halo dari kelompok D11
+    </h1>
+  </header>
+</html>
+' >/var/www/parikesit.abimanyu.d11/error/404.html
+
+echo "
+<VirtualHost *:80>
+  ServerName parikesit.abimanyu.d11.com
+  ServerAlias www.parikesit.abimanyu.d11.com
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/parikesit.abimanyu.d11
+
+  ErrorLog \${APACHE_LOG_DIR}/error.log
+  CustomLog \${APACHE_LOG_DIR}/access.log combined
+  
+  <Directory /var/www/parikesit.abimanyu.d11/public>
+    Options +Indexes
+  </Directory>
+  <Directory /var/www/parikesit.abimanyu.d11/secret>
+    Options -Indexes
+  </Directory>
+  
+  ErrorDocument 404 /error/404.html
+  ErrorDocument 403 /error/403.html
+</VirtualHost>" >/etc/apache2/sites-available/parikesit.abimanyu.d11.com.conf
+
+a2ensite parikesit.abimanyu.d11.com.conf
+service apache2 reload
+service apache2 restart
+```
+
+Run command pada `client`
+- Nakula & Sadewa Client
+
+```
+lynx parikesit.abimanyu.d11.com/error/403.html        
+lynx parikesit.abimanyu.d11.com/error/404.html
+```
+
+#### Result
+
+Hasil program dijalankan
+
+`ERROR 403`
+![Screenshot (115)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/761750c5-7c4f-4afe-9290-4f57243dd8c8)
+
+`ERROR 404`
+![Screenshot (113)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/b36a8b71-c9f6-4294-8638-8b2105a015a4)
+
+## Soal 16
 
 
 
