@@ -688,7 +688,69 @@ Hasil jika command berhasil dijalankan
 
 ![Screenshot 2023-10-17 141525](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/aa1b9981-1448-4a20-bd43-c9e5863a667e)
 
+## Soal 13
+Selain itu, pada subdomain www.parikesit.abimanyu.yyy.com, DocumentRoot disimpan pada /var/www/parikesit.abimanyu.yyy
 
+Answer:
+
+Setup untuk CNAME terlebih dahulu pada `/etc/bind/jarkom/abimanyu.d11.com` pada YudhistiraDNSMaster
+- YudhistiraDNSMaster
+```
+echo '$TTL	604800
+@	IN	SOA	abimanyu.d11.com.	root.abimanyu.d11.com. (
+			2022100601	; Serial
+			604800		; Refresh
+			86400		; Retry
+			2419200		; Expire
+			604800	)	; Negative Cache TTL
+;
+@	IN	NS	abimanyu.d11.com.
+@	IN	A	10.27.1.4	; IP Abimanyu
+www	IN	CNAME	abimanyu.d11.com.
+parikesit	IN	A	10.27.1.4 ; IP Abimanyu
+www.parikesit	IN	CNAME	parikesit.abimanyu.d11.com.
+ns1	IN	A	10.27.2.3	; IP Werkudara
+baratayuda	IN	NS	ns1
+@	IN	AAAA	::1' > /etc/bind/jarkom/abimanyu.d11.com
+```
+
+Kemudian setup AbimanyuWebServer untuk menyimpan DocumentRoot pada subdomain `parikesit.abimanyu.d11.com`
+
+- AbimanyuWebServer
+```
+mkdir /var/www/parikesit.abimanyu.d11
+
+echo "<VirtualHost *:80>
+  ServerName parikesit.abimanyu.d11.com
+  ServerAlias www.parikesit.abimanyu.d11.com
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/parikesit.abimanyu.d11
+
+  ErrorLog \${APACHE_LOG_DIR}/error.log
+  CustomLog \${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>" > /etc/apache2/sites-available/parikesit.abimanyu.d11.com.conf
+
+wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1LdbYntiYVF_NVNgJis1GLCLPEGyIOreS" -O /var/www/parikesit.abimanyu.d11/parikesit.abimanyu.d11.com.zip
+
+unzip /var/www/parikesit.abimanyu.d11/parikesit.abimanyu.d11.com.zip -d /var/www/parikesit.abimanyu.d11/
+
+mv /var/www/parikesit.abimanyu.d11/parikesit.abimanyu.yyy.com/error /var/www/parikesit.abimanyu.d11/
+mv /var/www/parikesit.abimanyu.d11/parikesit.abimanyu.yyy.com/public /var/www/parikesit.abimanyu.d11/
+
+a2ensite parikesit.abimanyu.d11.com.conf
+service apache2 reload
+service apache2 restart
+```
+
+Pada client, run command
+- Nakula & Sadewa Client
+```
+lynx parikesit.abimanyu.d11.com
+```
+#### Result
+
+Hasil setelah command berhasil berjalan
+![Screenshot (106)](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/cd02d583-008f-4310-b3c5-cf0f6a7b40a3)
 
 
 
