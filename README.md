@@ -667,7 +667,7 @@ Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abi
 Answer:
 
 Setup `AbimanyuWebServer` terlebih dahulu dengan menambahkan beberapa baris code yang menggunakan `Directory` dan `Alias` untuk mengganti urlnya
-
+- AbimanyuWebServer
 ```
   <Directory /var/www/abimanyu.d11/index.php/home>
       Options +Indexes
@@ -677,6 +677,7 @@ Setup `AbimanyuWebServer` terlebih dahulu dengan menambahkan beberapa baris code
 >>  /etc/apache2/sites-available/abimanyu.d11.com.conf
 ```
 Kemudian, pada client run command
+- Nakula & Sadewa Client
 ```
 lynx abimanyu.d11.com/home #atau
 curl abimanyu.d11.com/home
@@ -684,6 +685,7 @@ curl abimanyu.d11.com/home
 
 #### Result
 Hasil jika command berhasil dijalankan
+
 ![Screenshot 2023-10-17 141525](https://github.com/gracetrianaa/Jarkom-Modul-2-D11-2023/assets/90684914/aa1b9981-1448-4a20-bd43-c9e5863a667e)
 
 
